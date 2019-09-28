@@ -71,6 +71,13 @@ service servicemanager /sbin/servicemanager
     disabled
     seclabel u:r:recovery:s0
 
+service vndservicemanager /sbin/vndservicemanager /dev/vndbinder
+    disabled
+    user root
+    group root
+    writepid /dev/cpuset/system-background/tasks
+    seclabel u:r:recovery:s0
+
 service keystore_auth /sbin/keystore_auth
     oneshot
     user system
@@ -86,6 +93,12 @@ service keystore /sbin/keystore /tmp/misc/keystore
     seclabel u:r:recovery:s0
 
 service gatekeeper-1-0 /sbin/android.hardware.gatekeeper@1.0-service-qti
+    user root
+    group root
+    disabled
+    seclabel u:r:recovery:s0
+
+service gatekeeperd /sbin/gatekeeperd /data/misc/keystore
     user root
     group root
     disabled
@@ -117,26 +130,21 @@ on boot
 on init
     export LD_CONFIG_FILE /sbin/ld.config.txt
     start logd
+    start sbinqseecomd
     start hwservicemanager
+    start servicemanager
     start boot-1-0
     start prepdecrypt
+    start keymaster-4-0
     start time_daemon
-    setprop crypto.ready 1
 
 on property:crypto.ready=0
     stop sbinqseecomd
-    stop keymaster-4-0
     stop gatekeeper-1-0
     stop servicemanager
 
-on property:crypto.ready=1
-    start sbinqseecomd
-
 on property:vendor.sys.listeners.registered=true
-    start keymaster-4-0
+    start vndservicemanager
     start gatekeeper-1-0
-    start servicemanager
-    restart time_daemon
-
-on property:sys.usb.config=mtp,adb
+    start gatekeeperd
     restart time_daemon
