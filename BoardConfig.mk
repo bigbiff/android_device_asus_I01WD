@@ -114,6 +114,9 @@ BOARD_USES_METADATA_PARTITION := true
 # Use mke2fs to create ext4 images
 TARGET_USES_MKE2FS := true
 
+TARGET_USES_HARDWARE_QCOM_BOOTCTRL := true
+BOARD_PROVIDES_GPTUTILS := true
+
 # A/B updater updatable partitions list. Keep in sync with the partition list
 # with "_a" and "_b" variants in the device. Note that the vendor can add more
 # more partitions to this list for the bootloader and radio.
@@ -135,7 +138,7 @@ TW_INCLUDE_CRYPTO_FBE := true
 BOARD_SUPPRESS_SECURE_ERASE := true
 TW_USE_LEDS_HAPTICS := true
 TW_EXCLUDE_SUPERSU := true
-TW_NO_HAPTICS := true
 TARGET_RECOVERY_DEVICE_MODULES := android.hardware.boot@1.0
+TW_SUPPORT_INPUT_1_2_HAPTICS := true
 
 PLATFORM_VERSION := 16.1.0
